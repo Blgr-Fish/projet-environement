@@ -37,6 +37,15 @@ struct Couts{  // enregistrement qui contient les couts de productions de chaque
 
 struct Regions{ // enregistrement qui contient des liste d'enregistrement Production. chaque liste correspond à une des 12 régions
 
+
+	struct Caracteristiques{
+
+		string nom_region;
+		liste<Production> valeur_region;
+
+	};
+
+
 	// mono-region //
 
 	liste<Production> ile_de_france = {};
@@ -52,7 +61,7 @@ struct Regions{ // enregistrement qui contient des liste d'enregistrement Produc
 	liste<Production> auvergne_rhone_alpes = {};
 	liste<Production> provence_alpes_cote_d_azur = {};
 
-	liste<liste<Production>> liste_regions = {};
+	liste<Caracteristiques> liste_regions = {};
 
 	// parallele //
 
@@ -113,8 +122,6 @@ float couts_moyen(Production p_r, Couts cout) { // renvoie le cout de production
 	float resultats = (cout.cout_thermique * (p_r.thermique.taux_production/100)) + (cout.cout_nucleaire* (p_r.nucleaire.taux_production/100)) + (cout.cout_eolien*(p_r.eolien.taux_production/100)) + (cout.cout_solaire * (p_r.solaire.taux_production/100)) + (cout.cout_hydraulique *  (p_r.hydraulique.taux_production/100)) + (cout.cout_bioenergie *  (p_r.bioenergie.taux_production/100));
 	return resultats;
 }
-
-
 
 
 int cout_marginal_regional(Production regionale,tache_calcul tache_de_calcul, Couts couts){ // renvoie le cout marginal d'une region en fonction de la tache de calcul
@@ -479,7 +486,9 @@ tache_calcul lire_tache_calcul(string nom_fichier){
 	else {
 		cout << "Erreur : impossible d'ouvrir " << nom_fichier << endl;
 		}
+
 	return tache_de_calcul;
+
 }
 
 Couts lire_couts(string fichier){
@@ -505,13 +514,12 @@ Couts lire_couts(string fichier){
 	
 }
 
-liste<string> lire_regions(string fichier){
+liste<string> lire_regions_noms(string fichier){
 
 	liste<string> region_nom = {};
 	fstream flux;
 	string r;
 	flux.open(fichier , ios::in);
-
 	if(flux.is_open()){
 
 		flux >> r;
@@ -519,15 +527,14 @@ liste<string> lire_regions(string fichier){
 	while(flux.good()){
 
 		inserer(r,region_nom,taille(region_nom)+1);
-
 		flux  >> r;
 
 	}
 
-
 	flux.close();
 
 	}
+
 	else {
 		cout << "Erreur : impossible d'ouvrir " << fichier << endl;
 	}
@@ -536,7 +543,15 @@ liste<string> lire_regions(string fichier){
 
 }
 
+Regions lire_regions(string fichier, liste<string> regions_noms){
 
+	Regions r;
+	// faire suite
+	
+
+
+
+}
 
 
 int afficher_contenu_region (liste<Production> region, int id, Couts couts, string fichier){
@@ -735,7 +750,7 @@ int main(int argc , char * argv[]){ // tache_de_calcul couts mode fichier_produc
 
 
 
-	liste<string> r = lire_regions("regions.txt");
+	liste<string> r = lire_regions_noms("regions.txt");
 
 	for (string e : r){
 
