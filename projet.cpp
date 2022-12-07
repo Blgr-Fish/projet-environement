@@ -44,13 +44,15 @@ struct Regions{ // enregistrement qui contient des liste d'enregistrement Produc
 	liste<Production> bourgogne_franche_comte = {};
 	liste<Production> normandie = {};
 	liste<Production> hauts_de_france = {};
-	liste<Production> grand_est = {};
+	liste<Production> grand_est = {};						// Changer la tructure de donnée // 
 	liste<Production> pays_de_la_loire = {};
 	liste<Production> bretagne = {};
 	liste<Production> nouvelle_aquitaine = {};
 	liste<Production> occitanie = {};
 	liste<Production> auvergne_rhone_alpes = {};
 	liste<Production> provence_alpes_cote_d_azur = {};
+
+	liste<liste<Production>> liste_regions = {};
 
 	// parallele //
 
@@ -503,6 +505,40 @@ Couts lire_couts(string fichier){
 	
 }
 
+liste<string> lire_regions(string fichier){
+
+	liste<string> region_nom = {};
+	fstream flux;
+	string r;
+	flux.open(fichier , ios::in);
+
+	if(flux.is_open()){
+
+		flux >> r;
+
+	while(flux.good()){
+
+		inserer(r,region_nom,taille(region_nom)+1);
+
+		flux  >> r;
+
+	}
+
+
+	flux.close();
+
+	}
+	else {
+		cout << "Erreur : impossible d'ouvrir " << fichier << endl;
+	}
+
+	return region_nom;
+
+}
+
+
+
+
 int afficher_contenu_region (liste<Production> region, int id, Couts couts, string fichier){
 
 	fstream flux;
@@ -696,6 +732,16 @@ int main(int argc , char * argv[]){ // tache_de_calcul couts mode fichier_produc
 	auto stop = high_resolution_clock::now(); // fin du chrono
 	auto duration = duration_cast<milliseconds>(stop - start);
 	cout << "Temps d'execution : " << duration.count() <<  " millisecondes" << endl;
+
+
+
+	liste<string> r = lire_regions("regions.txt");
+
+	for (string e : r){
+
+		cout << e << endl;
+
+	}
     
 
     return 0;
