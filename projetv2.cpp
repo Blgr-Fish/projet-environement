@@ -37,15 +37,13 @@ struct Couts{  // enregistrement qui contient les couts de productions de chaque
 };
 
 
-struct Region{
+struct Region{ // enregistrement qui contient les valeurs d'une région : l'id, le nom et la liste de ses productions.
 
     int id;
     string nom;
     liste<Production> valeurs_production = {};
 
 };
-
-
 
 
 void taux_de_production_energie(Production & p_r, int & production_totale){
@@ -169,11 +167,8 @@ void insere_region(Production p_r, liste<Production> & r, Tache_de_calcul tache_
 	}
 }
 
-void insere_region_mono (Production p_r, Region & r, Tache_de_calcul tache_de_calcul){
-
-		//cout << r.id <<" " <<p_r.region << endl;		
-		//if (r[p_r.region] == p_r.region){ // ya un truc a modifier ici je pense oui c'est sur
-			
+void insere_region_mono (Production p_r, Region & r, Tache_de_calcul tache_de_calcul){ // on accède à la liste de production direcement depuis la région
+		
 			if (taille(r.valeurs_production) < tache_de_calcul.duree){
 				
 				inserer(p_r, r.valeurs_production, taille(r.valeurs_production)+1);
@@ -181,7 +176,6 @@ void insere_region_mono (Production p_r, Region & r, Tache_de_calcul tache_de_ca
 				
 			}	
 		}
-	//}
 	
 	
 
@@ -245,7 +239,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 
 				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
 
-					inserer(production_region, liste_regions_temp, taille(liste_regions_temp)+1);
+					inserer(production_region, liste_regions_temp, taille(liste_regions_temp)+1); // une liste temporaire qui va contenir les productions des régions sur 1 heure
 					
 				}
 
@@ -281,7 +275,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 						
 						case 2:
 							
-							for (long unsigned int region_id : tache_de_calcul.region){
+							for (long unsigned int region_id : tache_de_calcul.region){ // on fait une boucle pour pouvoir inserer la production dans la bonne région
 
 								if (ele.region == region_id){
 							
@@ -526,7 +520,6 @@ int afficher_contenu_region_mono (liste<Region> region, int identifiant, Couts c
 			for (int i = 1; i<= taille(region[identifiant].valeurs_production); i++){
 			
 				flux << region[identifiant].valeurs_production[i].mois << " " << region[identifiant].valeurs_production[i].jour << " " << region[identifiant].valeurs_production[i].heure << " " << region[identifiant].valeurs_production[i].region<< " " << couts_moyen(region[identifiant].valeurs_production[i], couts) << endl;
-				cout << region[identifiant].valeurs_production[i].heure << endl;
 		    }
 		}
 		
@@ -550,8 +543,6 @@ int afficher_regions (liste<Region> r,liste<Production> p, liste<Production> s,C
 
 		if (mode == 2){
 
-			//afficher_contenu_region_mono(r,4,couts,fichier);
-
 			for (int i = 1; i<= taille(r); i++){
 				
 				afficher_contenu_region_mono(r,r[i].id,couts,fichier);
@@ -571,7 +562,7 @@ int afficher_regions (liste<Region> r,liste<Production> p, liste<Production> s,C
 
 }
 
-int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_production   ex : tache_deb.txt couts.txt 4 t5.ssv
+int main(int argc , char * argv[]){ // tache_de_calcul couts regions production    ex : tache.txt couts.txt regions.txt t5.ssv
 
 
     liste<string> arguments_programme = arguments(argc,argv); // la liste des arguments ecrit depuis le terminal
@@ -603,10 +594,6 @@ int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_produc
 	
 	
 
-	lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,2);		// monoregion qui bug
-	
-	afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,2,fichiers[2]);
-
 	for (int i = 1; i<= taille(fichiers); i++){
 
 		lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,i);		// monoregion qui bug
@@ -615,7 +602,6 @@ int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_produc
 
 	}
 
-	cout << fichiers[2] << endl;
 
     cout << "Fin." << endl ;
 
