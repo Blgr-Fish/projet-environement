@@ -172,14 +172,15 @@ void insere_region(Production p_r, liste<Production> & r, Tache_de_calcul tache_
 
 void insere_region_mono (Production p_r, Region & r, Tache_de_calcul tache_de_calcul){
 
-	cout << taille(r.valeurs_production) << endl;
+	
 
 	for (int i = 1; i<= 5; i++){
 		if (r.id == p_r.region){
 
 			if (taille(r.valeurs_production) < tache_de_calcul.duree){
-
-				inserer(p_r, r.valeurs_production, taille( r.valeurs_production)+1);
+				
+				inserer(p_r, r.valeurs_production, taille(r.valeurs_production)+1);
+				
 			}	
 		}
 	}
@@ -618,7 +619,7 @@ int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_produc
     //lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,1);
     lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,2);
     //lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,3);
-    
+    cout << "aha" << endl;
     //afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,1,fichier1);
     afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,2,fichier2);
     //afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,3,fichier3);
@@ -640,87 +641,3 @@ int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_produc
 
 
 }
-	/*liste<string> arguments_programme = arguments(argc,argv); // la liste des arguments ecrit depuis le terminal
-	string production;
-    Region mes_regions ;
-    string Tache_de_calcul = arguments_programme[1];
-	Couts couts_productions = lire_couts(arguments_programme[2]);
-    Tache_de_calcul t = lire_Tache_de_calcul(Tache_de_calcul);
-	string fichier_ecriture;
-	int mode ;
-
-
-	liste<string> r = lire_regions_noms(arguments_programme[4]);
-	lire_regions(mes_regions,r);
-
-	Production aaa ;
-    
-	inserer(aaa,mes_regions.liste_regions[1].valeur_region,1);
-	cout << "yo" << endl;
-	mes_regions.liste_regions[1].valeur_region[1].jour = 1;
-	cout << "hahahahahahah" << endl;
-	cout <<"siuuu"<< mes_regions.liste_regions[1].valeur_region[1].jour<< endl;
-
-	
-
-	for(Regions::Caracteristiques ele : mes_regions.liste_regions){
-
-		//cout << ele.nom_region << " " << ele.id <<endl;
-	}
-
-	for (long unsigned int i = 1; i<= taille(mes_regions.liste_regions);i++){
-
-	//	cout << mes_regions.liste_regions[i].nom_region << " " << mes_regions.liste_regions[i].id << endl;
-	}
-
-
-
-	for (string ele : arguments_programme){
-		production = ele;
-	}
-
-	if (arguments_programme[3] == "1"){
-		mode = 1;
-	}
-	else{
-		if (arguments_programme[3]== "2"){
-			mode = 2;
-		}
-		else{
-			mode = 3;
-		}
-	}
-	
-	switch (mode){
-
-		case 1 : 
-			{fichier_ecriture = "parallele.txt";	// on met des accolades pour pouvoir créer une variable, sinon on ne peut pas en créer.
-			ofstream file("parallele.txt");			//permet de supprimer ce qui est déjà présent dans le fichier
-			break;
-			}
-
-		case 2 :
-			{fichier_ecriture = "monoregion.txt";
-			ofstream file("monoregion.txt");
-			break;
-			}
-			
-		default:
-			fichier_ecriture = "sequentielle.txt";
-			ofstream file("sequentielle.txt");
-			break;
-
-	}
-
-	cout << "Chargement... Cela peut prendre jusqu'a plusieurs dizaines de secondes..." << endl;
-
-	auto start = high_resolution_clock::now(); // pour lancer le chrono
-    
-	mes_regions = lire_production(production,couts_productions,t,mode);  // Erreur qui fait que quand on utilise arguments_programme au lieu d'un vrai string ça plante.
-	cout <<"la " << taille(mes_regions.liste_regions) << endl;
-    afficher_regions(mes_regions,couts_productions,mode,fichier_ecriture);
-	cout << "Fin." << endl;
-
-	auto stop = high_resolution_clock::now(); // fin du chrono
-	auto duration = duration_cast<milliseconds>(stop - start);
-	cout << "Temps d'execution : " << duration.count() <<  " millisecondes" << endl;*/
