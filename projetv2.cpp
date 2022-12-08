@@ -252,8 +252,6 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 
 					inserer(production_region, liste_regions_temp, taille(liste_regions_temp)+1);
 					
-                    
-
 				}
 
 			}			
@@ -288,8 +286,8 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 						
 						case 2:
                         
-							insere_region_mono(ele, regions[production_region.region], tache_de_calcul);
-                            
+							insere_region_mono(ele, regions[production_region.region], tache_de_calcul);	// \\//   //_\\
+                            cout << regions[production_region.region].nom << endl;  						//  ||	 //   \\
 							break;
 
 						}					
