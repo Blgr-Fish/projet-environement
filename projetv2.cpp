@@ -292,7 +292,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
                             
 							break;
 
-						}						
+						}					
 					}
 
 					if (mode_calcul != 1 and mode_calcul != 2 and couts_moyen(ele_temp,couts) > 0){ // des fois, couts_moyen(ele_temp,couts) est = 0, ce qui fait
