@@ -173,7 +173,7 @@ void insere_region_mono (Production p_r, Region & r, Tache_de_calcul tache_de_ca
 
 	
 
-	for (int i = 1; i<= 5; i++){
+	for (int i = 1; i<= taille(r.valeurs_production)+1; i++){								// ya un truc a modifier ici je pense
 		if (r.id == p_r.region){
 
 			if (taille(r.valeurs_production) < tache_de_calcul.duree){
@@ -523,7 +523,7 @@ int afficher_contenu_region_mono (liste<Region> region, int identifiant, Couts c
 			for (int i = 1; i<= taille(region[identifiant].valeurs_production); i++){
 			
 				flux << region[identifiant].valeurs_production[i].mois << " " << region[identifiant].valeurs_production[i].jour << " " << region[identifiant].valeurs_production[i].heure << " " << region[identifiant].valeurs_production[i].region<< " " << couts_moyen(region[identifiant].valeurs_production[i], couts) << endl;
-				cout << region[identifiant].valeurs_production[2].heure << endl;
+				cout << region[identifiant].valeurs_production[i].heure << endl;
 		    }
 		}
 		
