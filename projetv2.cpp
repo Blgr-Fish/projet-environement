@@ -602,8 +602,8 @@ int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_produc
 
     auto start = high_resolution_clock::now(); // pour lancer le chrono
 
-	lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,1);
-	afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,1,fichiers[1]);
+	lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,3);		// séquentielle qui bug
+	afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,3,fichiers[3]);
 	cout << "hihihihih" << endl;
 
 	for (int i = 1; i<= 3; i+=2){
