@@ -22,7 +22,7 @@ struct Production{
 };
 
 
-struct tache_calcul{ // enregistrement qui contient les données de la feuille de calcul (nombre de régions, cout marginal , etc)
+struct Tache_de_calcul{ // enregistrement qui contient les données de la feuille de calcul (nombre de régions, cout marginal , etc)
 
 	int identifiant,mois_depart,jour_depart,horaire_depart,mois_terminaison,jour_terminaison,horaire_terminaison;
 	string nom;
@@ -94,31 +94,31 @@ float couts_moyen(Production p_r, Couts cout) { // renvoie le cout de production
 }
 
 
-int cout_marginal_regional(Production regionale,tache_calcul tache_de_calcul, Couts couts){ // renvoie le cout marginal d'une region en fonction de la tache de calcul
+int cout_marginal_regional(Production regionale,Tache_de_calcul Tache_de_calcul, Couts couts){ // renvoie le cout marginal d'une region en fonction de la tache de calcul
 	
 	int cout_marginale = 0;
 	
-	if(regionale.thermique.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
+	if(regionale.thermique.taux_production > Tache_de_calcul.pourcentage_minimum_production_marginale){
 		cout_marginale = couts.cout_thermique; // 560
 		}
 	else{
-		if(regionale.bioenergie.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
+		if(regionale.bioenergie.taux_production > Tache_de_calcul.pourcentage_minimum_production_marginale){
 			cout_marginale = couts.cout_bioenergie; // 230
 			}
 		else{
-			if(regionale.solaire.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
+			if(regionale.solaire.taux_production > Tache_de_calcul.pourcentage_minimum_production_marginale){
 				cout_marginale = couts.cout_solaire; // 27
 				}
 			else{
-				if(regionale.hydraulique.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
+				if(regionale.hydraulique.taux_production > Tache_de_calcul.pourcentage_minimum_production_marginale){
 					cout_marginale = couts.cout_hydraulique; // 24
 					}
 				else{
-					if(regionale.nucleaire.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
+					if(regionale.nucleaire.taux_production > Tache_de_calcul.pourcentage_minimum_production_marginale){
 						cout_marginale = couts.cout_nucleaire; // 12
 						}
 					else{
-						if(regionale.eolien.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
+						if(regionale.eolien.taux_production > Tache_de_calcul.pourcentage_minimum_production_marginale){
 							cout_marginale = couts.cout_eolien; // 11
 							}
 						}
@@ -131,7 +131,7 @@ int cout_marginal_regional(Production regionale,tache_calcul tache_de_calcul, Co
 }
 
 
-bool contraintes(Production production ,tache_calcul tache_de_calcul, int cout_marg, float cout_moy,int production_region){
+bool contraintes(Production production ,Tache_de_calcul Tache_de_calcul, int cout_marg, float cout_moy,int production_region){
 
 	// les différentes contraintes sont : 
 	// 1. le cout moyen
@@ -141,13 +141,13 @@ bool contraintes(Production production ,tache_calcul tache_de_calcul, int cout_m
 
 	bool conditions = false;
 
-	if (cout_moy < tache_de_calcul.cout_moyen_maximum){ // 1
+	if (cout_moy < Tache_de_calcul.cout_moyen_maximum){ // 1
 
-		if (cout_marg < tache_de_calcul.cout_marginal_maximum){ // 2
+		if (cout_marg < Tache_de_calcul.cout_marginal_maximum){ // 2
 
-			if (production_region >= tache_de_calcul.pourcentage_maximal_importation){ // 3
+			if (production_region >= Tache_de_calcul.pourcentage_maximal_importation){ // 3
 
-				if (production.mois >= tache_de_calcul.mois_depart and production.jour >= tache_de_calcul.jour_depart and production.heure >= tache_de_calcul.horaire_depart){
+				if (production.mois >= Tache_de_calcul.mois_depart and production.jour >= Tache_de_calcul.jour_depart and production.heure >= Tache_de_calcul.horaire_depart){
 				
 					conditions = true;
 				}
@@ -160,9 +160,9 @@ bool contraintes(Production production ,tache_calcul tache_de_calcul, int cout_m
 }
 
 
-void insere_region(Production p_r, liste<Production> & r, tache_calcul tache_de_calcul){ // permet l'insertion des régions dans la liste parallele
+void insere_region(Production p_r, liste<Production> & r, Tache_de_calcul Tache_de_calcul){ // permet l'insertion des régions dans la liste parallele
 
-	if (taille(r) < tache_de_calcul.duree){  
+	if (taille(r) < Tache_de_calcul.duree){  
 		
 
 		inserer(p_r,r, taille(r)+1);
@@ -170,7 +170,7 @@ void insere_region(Production p_r, liste<Production> & r, tache_calcul tache_de_
 	}
 }
 
-void insere_region_mono (Production p_r, Region & r, tache_calcul tache_de_calcul){
+void insere_region_mono (Production p_r, Region & r, Tache_de_calcul Tache_de_calcul){
 
 	cout << taille(r.valeurs_production) << endl;
 
@@ -180,7 +180,7 @@ void insere_region_mono (Production p_r, Region & r, tache_calcul tache_de_calcu
 
 			
 
-			if (taille(r.valeurs_production) < tache_de_calcul.duree){
+			if (taille(r.valeurs_production) < Tache_de_calcul.duree){
 
 				inserer(p_r, r.valeurs_production, taille( r.valeurs_production)+1);
 			}	
@@ -190,13 +190,13 @@ void insere_region_mono (Production p_r, Region & r, tache_calcul tache_de_calcu
 	
 }
 
-void lire_production (liste<Region> & regions,liste<Production> & parallele, liste<Production> & sequentielle, string fichier,Couts couts,tache_calcul tache_de_calcul, int mode_calcul){
+void lire_production (liste<Region> & regions,liste<Production> & parallele, liste<Production> & sequentielle, string fichier,Couts couts,Tache_de_calcul Tache_de_calcul, int mode_calcul){
 																									
 	/* Paramètres :
 	
 	fichier: permet de lire le fichier des productions (celui de 100 000+ lignes)
 	couts : c'est l'enregistrement permettant des lire les couts
-	tache_de_calcul : c'est l'enegistrement permettant de lire la feuille de calcul.
+	Tache_de_calcul : c'est l'enegistrement permettant de lire la feuille de calcul.
 	mode_calcul : c'est l'entier qui va determiner la méthode d'execution
 	prend les valeurs suivantes : 1 : mode_calcul = parallele, 2 : mode_calcul = monoregion, autre : mode_calcul = sequentielle
 	
@@ -206,7 +206,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
     Production production_region;
 
 
-	int nombre_regions = taille(tache_de_calcul.region); // nombre de régions
+	int nombre_regions = taille(Tache_de_calcul.region); // nombre de régions
     int prod_totale_region = 0; 						 // la production totale d'une région qui est initialisée à 0
 	int region_compteur = 1 ; 							 // il va s'incrementer à chaque fois qu'on calcul une nouvelle region jusqu'a ce qu'on fasse toutes les régions
     int prod_totale_nation = 0; 						 // la production tôtale des 12 régions
@@ -240,14 +240,14 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 		region_compteur ++;
         echanges_totaux += production_region.importation.production; 
 		cout_moyen = couts_moyen(production_region,couts);
-		cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts);
+		cout_marginal = cout_marginal_regional(production_region,Tache_de_calcul,couts);
 
 
         while (flux.good()) { 
        			
-			for (long unsigned int region_id : tache_de_calcul.region){ // on vérifie que l'id de la région est présent dans la liste des régions de la feuille de calcul
+			for (long unsigned int region_id : Tache_de_calcul.region){ // on vérifie que l'id de la région est présent dans la liste des régions de la feuille de calcul
 
-				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
+				if (region_id == production_region.region and contraintes(production_region,Tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
 
 					inserer(production_region, liste_regions_temp, taille(liste_regions_temp)+1);
 
@@ -264,7 +264,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 				Production ele_temp;
 				float cout_eleve = 1000;     // on met un nombre très grand nombre pour l'initialisation.
 
-				if (importation_nationale <= tache_de_calcul.pourcentage_maximal_importation_nationale){ // importation nationale
+				if (importation_nationale <= Tache_de_calcul.pourcentage_maximal_importation_nationale){ // importation nationale
 					
 					for (Production ele : liste_regions_temp){
 
@@ -278,12 +278,12 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 						switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
 
 						case 1 :
-							insere_region(ele, regions[production_region.region].valeurs_production, tache_de_calcul);
+							insere_region(ele, regions[production_region.region].valeurs_production, Tache_de_calcul);
 							break;
 						
 						case 2:
 							cout << "ici" << " " << taille(regions[production_region.region].valeurs_production)<< endl;
-							insere_region_mono(ele, regions[production_region.region], tache_de_calcul);
+							insere_region_mono(ele, regions[production_region.region], Tache_de_calcul);
 							break;
 
 						}						
@@ -291,7 +291,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 
 					if (mode_calcul != 1 and mode_calcul != 2 and couts_moyen(ele_temp,couts) > 0){ // des fois, couts_moyen(ele_temp,couts) est = 0, ce qui fait
 																									// que la liste se remplie de 0.
-						insere_region(ele_temp, regions[production_region.region].valeurs_production, tache_de_calcul);
+						insere_region(ele_temp, regions[production_region.region].valeurs_production, Tache_de_calcul);
 
 					}
 
@@ -306,9 +306,9 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 	        flux >>production_region.jour; 
 	        flux >>production_region.heure;
 
-			if (production_region.mois >= tache_de_calcul.mois_terminaison){ // on s'assure qu'on a pas dépassé la date de fin dans la tache de calcul
-				if(production_region.jour >= tache_de_calcul.jour_terminaison){
-					if(production_region.heure > tache_de_calcul.horaire_terminaison){
+			if (production_region.mois >= Tache_de_calcul.mois_terminaison){ // on s'assure qu'on a pas dépassé la date de fin dans la tache de calcul
+				if(production_region.jour >= Tache_de_calcul.jour_terminaison){
+					if(production_region.heure > Tache_de_calcul.horaire_terminaison){
 
 						depassement_date = true; // si c'est la cas on passe depassement_date à true
 							
@@ -331,7 +331,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 			
 			cout_moyen = couts_moyen(production_region,couts);
 
-			cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); 
+			cout_marginal = cout_marginal_regional(production_region,Tache_de_calcul,couts); 
 
 			if (depassement_date){ 
 				flux.close();	 
@@ -347,8 +347,8 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
     
 }
 
-tache_calcul lire_tache_calcul(string nom_fichier){
-	tache_calcul tache_de_calcul;
+Tache_de_calcul lire_tache_de_calcul(string nom_fichier){
+	Tache_de_calcul tache_de_calcul;
 	fstream flux;
 	liste<int> li =  {};
 	int nb;
@@ -568,7 +568,7 @@ int afficher_regions (liste<Region> r,liste<Production> p, liste<Production> s,C
 
 }
 
-int main(int argc , char * argv[]){ // tache_de_calcul couts mode fichier_production   ex : tache_deb.txt couts.txt 4 t5.ssv
+int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_production   ex : tache_deb.txt couts.txt 4 t5.ssv
 
 
     liste<string> arguments_programme = arguments(argc,argv); // la liste des arguments ecrit depuis le terminal
@@ -579,7 +579,10 @@ int main(int argc , char * argv[]){ // tache_de_calcul couts mode fichier_produc
     liste<Production> methode_sequentielle = {};
 
 
-    string tache_de_calcul = arguments_programme[1];
+    Tache_de_calcul tache_calcul = lire_tache_de_calcul(arguments_programme[1]);
+    Couts couts_productions = lire_couts(arguments_programme[2]);
+
+
     string fichier_production ;
 
 
@@ -594,9 +597,9 @@ int main(int argc , char * argv[]){ // tache_de_calcul couts mode fichier_produc
 	/*liste<string> arguments_programme = arguments(argc,argv); // la liste des arguments ecrit depuis le terminal
 	string production;
     Region mes_regions ;
-    string tache_de_calcul = arguments_programme[1];
+    string Tache_de_calcul = arguments_programme[1];
 	Couts couts_productions = lire_couts(arguments_programme[2]);
-    tache_calcul t = lire_tache_calcul(tache_de_calcul);
+    Tache_de_calcul t = lire_Tache_de_calcul(Tache_de_calcul);
 	string fichier_ecriture;
 	int mode ;
 
