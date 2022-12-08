@@ -37,20 +37,20 @@ struct Couts{  // enregistrement qui contient les couts de productions de chaque
 
 struct Regions{ // enregistrement qui contient des liste d'enregistrement Production. chaque liste correspond à une des 12 régions
 
+	// mono-region //
 
-	struct Caracteristiques{ // r.liste_regions
-
-		string nom_region;
-		int id ;
-		liste<Production> valeur_region;
-
-	};
-
-
-
-
-	Caracteristiques regions_caracteristiques;
-	liste<Caracteristiques> liste_regions = {}; // ceci fait bugger le code Assertion failed: idx<taille, file liste.hpp, line 51
+	liste<Production> ile_de_france = {};
+	liste<Production> centre_val_de_loire = {};
+	liste<Production> bourgogne_franche_comte = {};
+	liste<Production> normandie = {};
+	liste<Production> hauts_de_france = {};
+	liste<Production> grand_est = {};
+	liste<Production> pays_de_la_loire = {};
+	liste<Production> bretagne = {};
+	liste<Production> nouvelle_aquitaine = {};
+	liste<Production> occitanie = {};
+	liste<Production> auvergne_rhone_alpes = {};
+	liste<Production> provence_alpes_cote_d_azur = {};
 
 	// parallele //
 
@@ -63,7 +63,13 @@ struct Regions{ // enregistrement qui contient des liste d'enregistrement Produc
 };
 
 
+
+
+
+
 // FONCTIONS ET PROCEDURES //
+
+
 
 
 
@@ -111,6 +117,8 @@ float couts_moyen(Production p_r, Couts cout) { // renvoie le cout de production
 	float resultats = (cout.cout_thermique * (p_r.thermique.taux_production/100)) + (cout.cout_nucleaire* (p_r.nucleaire.taux_production/100)) + (cout.cout_eolien*(p_r.eolien.taux_production/100)) + (cout.cout_solaire * (p_r.solaire.taux_production/100)) + (cout.cout_hydraulique *  (p_r.hydraulique.taux_production/100)) + (cout.cout_bioenergie *  (p_r.bioenergie.taux_production/100));
 	return resultats;
 }
+
+
 
 
 int cout_marginal_regional(Production regionale,tache_calcul tache_de_calcul, Couts couts){ // renvoie le cout marginal d'une region en fonction de la tache de calcul
@@ -184,13 +192,16 @@ void insere_region_parallele(Production p_r, Regions & r, tache_calcul tache_de_
 		
 
 		inserer(p_r,r.parallele, taille(r.parallele)+1);
-
+		for (Production ele : r.parallele){
+			cout << ele.heure << endl;
+		}
 	}
+
 }
 
 void insere_region_mono (Production p_r, Regions & r, tache_calcul tache_de_calcul){
 
-	/*switch(p_r.region){ // en fonction de l'id de la région, on a un cas différent : s'inserer dans une des 12 listes des régions
+	switch(p_r.region){ // en fonction de l'id de la région, on a un cas différent : s'inserer dans une des 12 listes des régions
 
 		case 1 :
 			if (taille(r.ile_de_france) < tache_de_calcul.duree){ // ce if permet de stoper l'insertion lorsqu'on a dépasse la limite de calcul pour cette région
@@ -263,24 +274,10 @@ void insere_region_mono (Production p_r, Regions & r, tache_calcul tache_de_calc
 				inserer(p_r, r.provence_alpes_cote_d_azur, taille(r.provence_alpes_cote_d_azur)+1);
 			}
 			break;
-	}*/
 
-	cout << taille(r.liste_regions) << endl;
-
-	for (int i = 1; i<= 5; i++){
-		cout << "haha" << endl;
-		if (r.liste_regions[i].id == p_r.region){
-
-			
-
-			if (taille(r.liste_regions[i].valeur_region) < tache_de_calcul.duree){
-
-				inserer(p_r, r.liste_regions[i].valeur_region, taille( r.liste_regions[i].valeur_region)+1);
-			}	
-		}
 	}
-	
-	
+
+
 }
 
 
@@ -318,7 +315,8 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 	int region_compteur = 1 ; 							 // il va s'incrementer à chaque fois qu'on calcul une nouvelle region jusqu'a ce qu'on fasse toutes les régions
     int prod_totale_nation = 0; 						 // la production tôtale des 12 régions
     int echanges_totaux = 0; 							 // les échanges physiques totaux des 12 régions
-	int cout_marginal = 0; 								 // le cout marginal d'une région	
+	int cout_marginal = 0; 								 // le cout marginal d'une région
+	
 	float cout_moyen = 0; 								 //le cout moyen des productions d'une region 
 	float importation_nationale = 0; 					 // importation nationale 
 	
@@ -342,6 +340,8 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
         flux >>production_region.importation.production;
 
+
+
         taux_de_production_energie(production_region,prod_totale_region); // cette procedure permet d'avoirs les taux de productions et de récuperer la production totale
         prod_totale_nation += prod_totale_region; 
 		region_compteur ++;
@@ -351,7 +351,8 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 
         while (flux.good()) { 
-       			
+       
+			
 			for (long unsigned int region_id : tache_de_calcul.region){ // on vérifie que l'id de la région est présent dans la liste des régions de la feuille de calcul
 
 				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
@@ -368,20 +369,21 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 				echanges_totaux = 0;
 				region_compteur = 1;
 
-				Production ele_temp;
-				float cout_eleve = 1000;     // on met un nombre très grand nombre pour l'initialisation.
+				if (importation_nationale < tache_de_calcul.pourcentage_maximal_importation_nationale){
 
-				if (importation_nationale <= tache_de_calcul.pourcentage_maximal_importation_nationale){ // importation nationale
+					Production ele_temp;
+					int test = 1;
 					
+					
+
 					for (Production ele : liste_regions_temp){
 
-						if ( cout_eleve >= couts_moyen(ele,couts)){ // vu que cout_eleve est très grand, il sera forcément supérieur à couts_moyen.
-							
+						if ( test <= couts_moyen(ele,couts)){
 							ele_temp = ele;
-							cout_eleve = couts_moyen(ele_temp,couts); // puis cout_eleve prend la valeur du cout moyen de ele.
-														
+							test = couts_moyen(ele,couts);
+							
 						}
-						
+
 						switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
 
 						case 1 :
@@ -389,15 +391,14 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 							break;
 						
 						case 2:
-							cout << "ici" << " " << taille(regions.liste_regions)<< endl;
 							insere_region_mono(ele, regions, tache_de_calcul);
 							break;
-
-						}						
+					
+						}
 					}
 
-					if (mode_calcul != 1 and mode_calcul != 2 and couts_moyen(ele_temp,couts) > 0){ // des fois, couts_moyen(ele_temp,couts) est = 0, ce qui fait
-																									// que la liste se remplie de 0.
+					if (mode_calcul == 3){
+
 						insere_region_sequentielle(ele_temp, regions, tache_de_calcul);
 
 					}
@@ -405,13 +406,15 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 					liste_regions_temp = {};
 				}
 			}
-					
+			
             int prod_totale_region = 0;
 
             flux >>production_region.region; 
 	        flux >>production_region.mois; 
 	        flux >>production_region.jour; 
 	        flux >>production_region.heure;
+
+
 
 			if (production_region.mois >= tache_de_calcul.mois_terminaison){ // on s'assure qu'on a pas dépassé la date de fin dans la tache de calcul
 				if(production_region.jour >= tache_de_calcul.jour_terminaison){
@@ -429,6 +432,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
         	flux >>production_region.solaire.production;
             flux >>production_region.hydraulique.production;
         	flux >>production_region.bioenergie.production;
+
             flux >>production_region.importation.production;
 
             taux_de_production_energie(production_region,prod_totale_region); 
@@ -443,8 +447,32 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 			if (depassement_date){ 
 				flux.close();	 
 			}
+
+				
 		}
+						
+		/*for (long unsigned int region_id : tache_de_calcul.region){ // on refait ça après le while pour pouvoir inserer la dernière Production.
+
+			if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){ 
 					
+					switch (mode_calcul){
+
+						case 1 :
+							insere_region_parallele(production_region, regions, tache_de_calcul);
+							break;
+						
+						case 2:
+							insere_region_mono(production_region, regions, tache_de_calcul);
+							break;
+						
+						default:
+							insere_region_sequentielle(production_region,regions,tache_de_calcul);
+							
+							break;
+
+					}
+			}
+		}*/
 
         flux.close();   
     }
@@ -483,9 +511,10 @@ tache_calcul lire_tache_calcul(string nom_fichier){
 		while (flux.good()){
 
 			inserer(nb, li, taille(li)+1);
+
 			flux >> nb ;
 		}
-			inserer(nb, li, taille(li)+1); // on insere une dernière fois pour pas passer la dernière région
+
 			tache_de_calcul.region = li;
 
 		
@@ -494,9 +523,7 @@ tache_calcul lire_tache_calcul(string nom_fichier){
 	else {
 		cout << "Erreur : impossible d'ouvrir " << nom_fichier << endl;
 		}
-
 	return tache_de_calcul;
-
 }
 
 Couts lire_couts(string fichier){
@@ -522,53 +549,7 @@ Couts lire_couts(string fichier){
 	
 }
 
-liste<string> lire_regions_noms(string fichier){
-
-	liste<string> region_nom = {};
-	fstream flux;
-	string r;
-	flux.open(fichier , ios::in);
-	if(flux.is_open()){
-
-		flux >> r;
-
-	while(flux.good()){
-
-		inserer(r,region_nom,taille(region_nom)+1);
-		flux  >> r;
-
-	}
-
-	flux.close();
-
-	}
-
-	else {
-		cout << "Erreur : impossible d'ouvrir " << fichier << endl;
-	}
-
-	return region_nom;
-
-}
-
-void lire_regions(Regions & r,liste<string> regions_noms){		// on met le nom d'une région dans une Caracterisitiques, puis on la met dans une liste d eCaracteristiques.
-
-	int num = 1;
-	
-	for (string ele : regions_noms){
-
-		r.regions_caracteristiques.nom_region = ele;
-		r.regions_caracteristiques.id = num;
-		num ++;
-		inserer(r.regions_caracteristiques,r.liste_regions,taille(r.liste_regions)+1);
-
-	}
-
-
-}
-
-
-int afficher_contenu_region(liste<Production> region, int identifiant, Couts couts, string fichier){
+int afficher_contenu_region (liste<Production> region, int id, Couts couts, string fichier){
 
 	fstream flux;
 	flux.open(fichier,ios::app); // ios::app permet d'ecrire à la suite du fichier, sans supprimer les données précédentes.
@@ -576,7 +557,9 @@ int afficher_contenu_region(liste<Production> region, int identifiant, Couts cou
 	if (flux.is_open()){
 
 	
-		switch (identifiant){ // MODIFICATION ICI //
+		switch (id){
+
+			
 
 			case -1 :
 
@@ -585,56 +568,90 @@ int afficher_contenu_region(liste<Production> region, int identifiant, Couts cou
 
 			case 0 :	// on choisit 0 pour le mode parallèle, cela nous évite de devoir créer une seconde fonction juste pour l'affichage de cette méthode d'execution.
 				
-				flux << "Parallele" << " " << taille(region) << endl;				
+				flux << "Parallele" << " " << taille(region) << endl;
+				
+				break;
+
+			case 1 :
+				
+				flux << "Ile-de-France" << " " << taille(region) << endl;
+				
+				break;
+
+			case 2 :
+				
+				flux << "Centre-Val_de_Loire" << " " << taille(region) << endl;
+				
+				break;
+
+			case 3 :
+				
+				flux << "Bourgogne-Franche-Comte" << " " << taille(region) << endl;
+				
+				break;
+
+			case 4 :
+				
+				flux << "Normandie" << " " << taille(region) << endl; ;
+				
+				break;
+
+			case 5 :
+				
+				flux << "Hauts-de-France" << " " << taille(region) << endl;
+				
+				break;
+
+			case 6 :
+				
+				flux << "Grand_Est" << " " << taille(region) << endl;
+				
+				break;
+
+			case 7 :
+				
+				flux << "Pays_de_la_Loire" << " " << taille(region) << endl;
+				
+				break;
+
+			case 8 :
+				
+				flux << "Bretagne" << " " << taille(region) << endl;
+				
+				break;
+
+			case 9 :
+				
+				flux << "Nouvelle-Aquitaine" << " " << taille(region) << endl;
+				
+				break;
+
+			case 10 :
+				
+				flux << "Occitanie" << " " << taille(region) << endl;
+				
+				break;
+
+			case 11 :
+				
+				flux << "Auvergne-Rhone-Alpes" << " " << taille(region) << endl;
+				
+				break;
+
+			case 12 :
+				
+				flux << "Provence-Alpes-Cote_d'Azur" << " " << taille(region) << endl;
+				
 				break;
 
 		}
 
-			for (Production ele : region){
+		for (Production ele : region){
 
-				flux << ele.mois << " " << ele.jour << " " << ele.heure << " " << ele.region << " " << couts_moyen(ele, couts) << endl;
-
-			}
-		
-
-		flux.close();
-	}
-	else{
-		 cout << "Erreur : impossible d'ouvrir " << fichier << endl;
-	}
-
-	return 0;
-}
-
-
-
-
-int afficher_contenu_region_mono (Regions region, int identifiant, Couts couts, string fichier){
-	
-	fstream flux;
-	flux.open(fichier,ios::app); // ios::app permet d'ecrire à la suite du fichier, sans supprimer les données précédentes.
-	cout << "caca" << endl;
-	
-	if (flux.is_open()){
-
-
-		for (long unsigned int i = 1; i<= taille(region.liste_regions);i++){
-
-			cout << region.liste_regions[i].nom_region << " " << region.liste_regions[i].id << endl;
-		}
-		
-		cout << region.liste_regions[identifiant].nom_region << endl;
-		cout << "hihi" << endl;
-		flux << region.liste_regions[identifiant].nom_region << " " << taille(region.liste_regions[identifiant].valeur_region) << endl;
-		
-		if ( taille(region.liste_regions[identifiant].valeur_region)>= 1){
-			for (int i = 1; i<= taille(region.liste_regions[identifiant].valeur_region); i++){
-			
-				flux << region.liste_regions[identifiant].valeur_region[i].mois << " " << region.liste_regions[identifiant].valeur_region[i].jour << " " << region.liste_regions[identifiant].valeur_region[i].heure << " " << region.liste_regions[identifiant].valeur_region[i].region<< " " << couts_moyen(region.liste_regions[identifiant].valeur_region[i], couts) << endl;
+			flux << ele.mois << " " << ele.jour << " " << ele.heure << " " << ele.region << " " << couts_moyen(ele, couts) << endl;
 
 		}
-		}
-		
+
 		flux.close();
 	}
 	else{
@@ -656,7 +673,7 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 
 		if (mode == 2){
 
-			/*afficher_contenu_region(r.ile_de_france,1,couts,fichier);
+			afficher_contenu_region(r.ile_de_france,1,couts,fichier);
 			afficher_contenu_region(r.centre_val_de_loire,2,couts,fichier);
 			afficher_contenu_region(r.bourgogne_franche_comte,3,couts,fichier);
 			afficher_contenu_region(r.normandie,4,couts,fichier);
@@ -667,14 +684,7 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 			afficher_contenu_region(r.nouvelle_aquitaine,9,couts,fichier);
 			afficher_contenu_region(r.occitanie,10,couts,fichier);
 			afficher_contenu_region(r.auvergne_rhone_alpes,11,couts,fichier);
-			afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts,fichier);*/
-			afficher_contenu_region_mono(r,4,couts,fichier);
-
-			for (int i = 1; i<= taille(r.liste_regions); i++){
-				
-				afficher_contenu_region_mono(r,r.liste_regions[i].id,couts,fichier);
-
-			}
+			afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts,fichier);
 
 		}
 
@@ -688,10 +698,14 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 
 }
 
-int main(int argc , char * argv[]){ // tache_de_calcul couts mode fichier_production   ex : tache_deb.txt couts.txt 4 t5.ssv
+int main(int argc , char * argv[]){ // t5.ssv couts.txt mode
 
-	liste<string> arguments_programme = arguments(argc,argv); // la liste des arguments ecrit depuis le terminal
-	string production;
+	liste<string> arguments_programme = arguments(argc,argv);
+
+	for (string ele : arguments_programme){
+		cout << ele << endl;
+	}
+
     Regions mes_regions ;
     string tache_de_calcul = arguments_programme[1];
 	Couts couts_productions = lire_couts(arguments_programme[2]);
@@ -699,41 +713,15 @@ int main(int argc , char * argv[]){ // tache_de_calcul couts mode fichier_produc
 	string fichier_ecriture;
 	int mode ;
 
-
-	liste<string> r = lire_regions_noms(arguments_programme[4]);
-	lire_regions(mes_regions,r);
-
-	Production aaa ;
-    
-	inserer(aaa,mes_regions.liste_regions[1].valeur_region,1);
-	cout << "yo" << endl;
-	mes_regions.liste_regions[1].valeur_region[1].jour = 1;
-	cout << "hahahahahahah" << endl;
-	cout <<"siuuu"<< mes_regions.liste_regions[1].valeur_region[1].jour<< endl;
-
-	
-
-	for(Regions::Caracteristiques ele : mes_regions.liste_regions){
-
-		//cout << ele.nom_region << " " << ele.id <<endl;
-	}
-
-	for (long unsigned int i = 1; i<= taille(mes_regions.liste_regions);i++){
-
-	//	cout << mes_regions.liste_regions[i].nom_region << " " << mes_regions.liste_regions[i].id << endl;
-	}
-
-
-
-	for (string ele : arguments_programme){
-		production = ele;
-	}
+	cout << "okok" << endl;
+	cout << arguments_programme[3];
 
 	if (arguments_programme[3] == "1"){
 		mode = 1;
 	}
 	else{
 		if (arguments_programme[3]== "2"){
+			cout << "ok" << endl;
 			mode = 2;
 		}
 		else{
@@ -766,17 +754,14 @@ int main(int argc , char * argv[]){ // tache_de_calcul couts mode fichier_produc
 
 	auto start = high_resolution_clock::now(); // pour lancer le chrono
     
-	mes_regions = lire_production(production,couts_productions,t,mode);  // Erreur qui fait que quand on utilise arguments_programme au lieu d'un vrai string ça plante.
-	cout <<"la " << taille(mes_regions.liste_regions) << endl;
+	mes_regions = lire_production("t5.ssv",couts_productions,t,mode); 
     afficher_regions(mes_regions,couts_productions,mode,fichier_ecriture);
 	cout << "Fin." << endl;
 
 	auto stop = high_resolution_clock::now(); // fin du chrono
 	auto duration = duration_cast<milliseconds>(stop - start);
 	cout << "Temps d'execution : " << duration.count() <<  " millisecondes" << endl;
-
-
-
+    
 
     return 0;
 
