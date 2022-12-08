@@ -201,7 +201,6 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
     fstream flux;
     Production production_region;
 
-    
 
 	int nombre_regions = taille(tache_de_calcul.region); // nombre de régions
     int prod_totale_region = 0; 						 // la production totale d'une région qui est initialisée à 0
@@ -217,8 +216,6 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 
     flux.open(fichier, ios::in);
     if (flux.is_open()) {
-
-        
 
         flux >>production_region.region;  // première lecture avant le tant que
 	    flux >>production_region.mois; 
@@ -607,15 +604,18 @@ int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_produc
 	
 
 	lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,2);		// monoregion qui bug
-	cout << "debug2" << endl;
+	
 	afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,2,fichiers[2]);
 
-	cout << fichiers[2] << endl;
+	for (int i = 1; i<= taille(fichiers); i++){
 
-	//for (int i = 1; i<= 3; i+=2){
-	//	lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,i);
-	//	afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,i,fichiers[i]);
-	//}
+		lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,i);		// monoregion qui bug
+		afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,i,fichiers[i]);
+
+
+	}
+
+	cout << fichiers[2] << endl;
 
     cout << "Fin." << endl ;
 
