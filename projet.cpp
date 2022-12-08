@@ -390,6 +390,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 							break;
 						
 						case 2:
+						cout<<'b'<<endl;
 							insere_region_mono(ele, regions, tache_de_calcul);
 							break;
 

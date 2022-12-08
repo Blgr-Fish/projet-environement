@@ -171,21 +171,20 @@ void insere_region(Production p_r, liste<Production> & r, Tache_de_calcul tache_
 
 void insere_region_mono (Production p_r, Region & r, Tache_de_calcul tache_de_calcul){
 
-	
-
-	for (int i = 1; i<= taille(r.valeurs_production)+1; i++){								// ya un truc a modifier ici je pense
-		if (r.id == p_r.region){
-
+		//cout << r.id <<" " <<p_r.region << endl;		
+		//if (r[p_r.region] == p_r.region){ // ya un truc a modifier ici je pense oui c'est sur
+			
 			if (taille(r.valeurs_production) < tache_de_calcul.duree){
 				
 				inserer(p_r, r.valeurs_production, taille(r.valeurs_production)+1);
 				
+				
 			}	
 		}
-	}
+	//}
 	
 	
-}
+
 
 void lire_production (liste<Region> & regions,liste<Production> & parallele, liste<Production> & sequentielle, string fichier,Couts couts,Tache_de_calcul tache_de_calcul, int mode_calcul){
 																									
@@ -284,10 +283,17 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 							break;
 						
 						case 2:
-                        
-							insere_region_mono(ele, regions[production_region.region], tache_de_calcul);
-                            cout << regions[production_region.region].nom << endl;  						
+							
+							for (long unsigned int region_id : tache_de_calcul.region){
+
+								if (ele.region == region_id){
+							
+								insere_region_mono(ele, regions[region_id], tache_de_calcul);
+								}
+							}	
+
 							break;
+							
 
 						}					
 					}
