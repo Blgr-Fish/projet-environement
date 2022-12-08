@@ -165,7 +165,6 @@ void insere_region(Production p_r, liste<Production> & r, Tache_de_calcul tache_
 	if (taille(r) < tache_de_calcul.duree){  
 		 
 		inserer(p_r,r, taille(r)+1);
-        cout << taille(r) << endl;
 
 	}
 }
@@ -565,8 +564,9 @@ int afficher_regions (liste<Region> r,liste<Production> p, liste<Production> s,C
 		}
 
 		else{
-
-			afficher_contenu_region(s,-1,couts,fichier); // on choisit -1 l'id pour la liste parallele
+			
+			afficher_contenu_region(s,-1,couts,fichier); // on choisit -1 l'id pour la liste sequentielle
+			
 		}
 	}
 	
@@ -580,33 +580,21 @@ int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_produc
     liste<string> arguments_programme = arguments(argc,argv); // la liste des arguments ecrit depuis le terminal
 
 
-    liste<Region> les_regions = {};
+    liste<Region> les_regions = {};												// liste des régions, sert pour la méthode monoregions
     liste<Production> methode_parallele = {};
     liste<Production> methode_sequentielle = {};
-
-
-    Tache_de_calcul tache_calcul = lire_tache_de_calcul(arguments_programme[1]);
-    Couts couts_productions = lire_couts(arguments_programme[2]);
-
-
-    
-
-    liste<string> liste_regions = lire_regions_noms(arguments_programme[3]);
+    Tache_de_calcul tache_calcul = lire_tache_de_calcul(arguments_programme[1]);// tache de calcul
+    Couts couts_productions = lire_couts(arguments_programme[2]); 
+    liste<string> liste_regions = lire_regions_noms(arguments_programme[3]);	// liste des régions
     lire_regions(les_regions,liste_regions);
-
-    ofstream file0("parallele.txt");	
-    ofstream file1("monoregion.txt");	
-    ofstream file2("sequentielle.txt");	
-
-    string fichier1 = "parallele.txt";
-    string fichier2 = "monoregion.txt";
-    string fichier3 = "sequentielle.txt";
-
+    ofstream file0("parallele.txt");											//
+    ofstream file1("monoregion.txt");											// On ouvre les fichiers pour les reset
+    ofstream file2("sequentielle.txt");											//
+	liste<string> fichiers = {"parallele.txt", "monoregion.txt", "sequentielle.txt"}; // liste des fichiers d'écriture
     string fichier_production ;
-
-    for (string ele : arguments_programme){
-
-        fichier_production = ele;
+    for (string ele : arguments_programme){										// le dernier élement de arguments_programme ne marche pas pour x,raison
+								
+        fichier_production = ele;												// j'ai donc fait ça pour le lire
 
     }
 
@@ -614,13 +602,15 @@ int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_produc
 
     auto start = high_resolution_clock::now(); // pour lancer le chrono
 
-    //lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,1);
-    lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,2);
-    //lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,3);
-    cout << "aha" << endl;
-    //afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,1,fichier1);
-    afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,2,fichier2);
-    //afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,3,fichier3);
+	lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,1);
+	afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,1,fichiers[1]);
+	cout << "hihihihih" << endl;
+
+	for (int i = 1; i<= 3; i+=2){
+		lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,i);
+		cout << "aha" << endl;
+		afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,i,fichiers[i]);
+	}
 
     cout << "Fin." << endl ;
 
@@ -630,12 +620,5 @@ int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_produc
 	cout << "Temps d'execution : " << duration.count() <<  " millisecondes" << endl;
 
     return 0;
-
-
-
-
-
-
-
 
 }
