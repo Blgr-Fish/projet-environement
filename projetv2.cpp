@@ -285,8 +285,8 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 						
 						case 2:
                         
-							insere_region_mono(ele, regions[production_region.region], tache_de_calcul);	// \\//   //_\\
-                            cout << regions[production_region.region].nom << endl;  						//  ||	 //   \\
+							insere_region_mono(ele, regions[production_region.region], tache_de_calcul);
+                            cout << regions[production_region.region].nom << endl;  						
 							break;
 
 						}					
@@ -462,10 +462,11 @@ void lire_regions (liste<Region> & r,liste<string> regions_noms){		// on met le 
 		temp.nom = ele;
 		temp.id = num;
 		num ++;
-
 		inserer(temp,r,taille(r)+1);
 
 	}
+
+	
 
 
 }
@@ -512,24 +513,17 @@ int afficher_contenu_region_mono (liste<Region> region, int identifiant, Couts c
 	
 	fstream flux;
 	flux.open(fichier,ios::app); // ios::app permet d'ecrire à la suite du fichier, sans supprimer les données précédentes.
-	cout << "caca" << endl;
 	
 	if (flux.is_open()){
 
-
-		for (long unsigned int i = 1; i<= taille(region);i++){
-
-			cout << region[i].nom<< " " << region[i].id << endl;
-		}
 		
-
-		flux << region[identifiant].nom << " " << taille(region[identifiant].valeurs_production) << endl;
+		flux << region[identifiant].nom << " " << taille(region[identifiant].valeurs_production) << endl; 
 		
 		if ( taille(region[identifiant].valeurs_production)>= 1){
 			for (int i = 1; i<= taille(region[identifiant].valeurs_production); i++){
 			
 				flux << region[identifiant].valeurs_production[i].mois << " " << region[identifiant].valeurs_production[i].jour << " " << region[identifiant].valeurs_production[i].heure << " " << region[identifiant].valeurs_production[i].region<< " " << couts_moyen(region[identifiant].valeurs_production[i], couts) << endl;
-
+				cout << region[identifiant].valeurs_production[2].heure << endl;
 		    }
 		}
 		
@@ -590,7 +584,7 @@ int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_produc
     ofstream file0("parallele.txt");											//
     ofstream file1("monoregion.txt");											// On ouvre les fichiers pour les reset
     ofstream file2("sequentielle.txt");											//
-	liste<string> fichiers = {"parallele.txt", "monoregion.txt", "sequentielle.txt"}; // liste des fichiers d'écriture
+	liste<string> fichiers = {"parallele.txt", "monoregion.txt","sequentielle.txt"}; // liste des fichiers d'écriture
     string fichier_production ;
     for (string ele : arguments_programme){										// le dernier élement de arguments_programme ne marche pas pour x,raison
 								
@@ -598,19 +592,24 @@ int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_produc
 
     }
 
+
+
     cout << "Chargement... Cela peut prendre jusqu'a plusieurs dizaines de secondes..." << endl;
 
     auto start = high_resolution_clock::now(); // pour lancer le chrono
+	
+	
 
-	lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,3);		// séquentielle qui bug
-	afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,3,fichiers[3]);
-	cout << "hihihihih" << endl;
+	lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,2);		// monoregion qui bug
+	cout << "debug2" << endl;
+	afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,2,fichiers[2]);
 
-	for (int i = 1; i<= 3; i+=2){
-		lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,i);
-		cout << "aha" << endl;
-		afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,i,fichiers[i]);
-	}
+	cout << fichiers[2] << endl;
+
+	//for (int i = 1; i<= 3; i+=2){
+	//	lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,i);
+	//	afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,i,fichiers[i]);
+	//}
 
     cout << "Fin." << endl ;
 
