@@ -101,7 +101,7 @@ Centre_Val_de_Loire 100
 1 5 2 2 20.0255
 1 5 3 2 20.0425
 Bourgogne_Franche_Comte 0
-Normandie 93
+Bobby_batody 93
 1 1 0 4 33.9617
 1 1 1 4 35.1975
 1 1 10 4 35.3071
@@ -706,7 +706,7 @@ Centre_Val_de_Loire 100
 1 5 2 2 20.0255
 1 5 3 2 20.0425
 Bourgogne_Franche_Comte 0
-Normandie 100
+Bobby_batody 100
 1 1 0 4 33.9617
 1 1 1 4 35.1975
 1 1 10 4 35.3071
