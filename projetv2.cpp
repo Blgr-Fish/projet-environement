@@ -164,18 +164,8 @@ void insere_region(Production p_r, liste<Production> & r, Tache_de_calcul tache_
 
 	if (taille(r) < tache_de_calcul.duree){  
 		 
-
 		inserer(p_r,r, taille(r)+1);
-        for (Production ele : r){
-
-            cout << ele.jour << endl;
-        }
-
-        for (int i=1 ; i<= taille(r);i++){
-
-            cout << r[i].jour << endl;
-
-        }
+        cout << taille(r) << endl;
 
 	}
 }
@@ -185,10 +175,7 @@ void insere_region_mono (Production p_r, Region & r, Tache_de_calcul tache_de_ca
 	cout << taille(r.valeurs_production) << endl;
 
 	for (int i = 1; i<= 5; i++){
-		cout << "haha" << endl;
 		if (r.id == p_r.region){
-
-			
 
 			if (taille(r.valeurs_production) < tache_de_calcul.duree){
 
@@ -263,6 +250,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
 
 					inserer(production_region, liste_regions_temp, taille(liste_regions_temp)+1);
+					
                     
 
 				}
@@ -293,7 +281,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 						switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
 
 						case 1 :
-							insere_region(ele, regions[production_region.region].valeurs_production, tache_de_calcul,couts);
+							insere_region(ele, parallele, tache_de_calcul,couts);
                            
 							break;
 						
@@ -308,7 +296,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 
 					if (mode_calcul != 1 and mode_calcul != 2 and couts_moyen(ele_temp,couts) > 0){ // des fois, couts_moyen(ele_temp,couts) est = 0, ce qui fait
                                                                                                     // que la liste se remplie de 0.
-						insere_region(ele_temp, regions[production_region.region].valeurs_production, tache_de_calcul,couts);
+						insere_region(ele_temp,sequentielle, tache_de_calcul,couts);
 
 					}
 
@@ -627,13 +615,13 @@ int main(int argc , char * argv[]){ // Tache_de_calcul couts mode fichier_produc
 
     auto start = high_resolution_clock::now(); // pour lancer le chrono
 
-    lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,1);
-    //lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,2);
+    //lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,1);
+    lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,2);
     //lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,3);
     
-    afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,1,fichier1);
-    //afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,1,fichier2);
-    //afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,1,fichier3);
+    //afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,1,fichier1);
+    afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,2,fichier2);
+    //afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,3,fichier3);
 
     cout << "Fin." << endl ;
 
