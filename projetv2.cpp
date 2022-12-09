@@ -1,8 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include "liste.hpp"
-#include <chrono>
-using namespace std::chrono;
+#include <chrono>			// pour utiliser un chrono, permet de calculer la vitesse d'execution du programme
+using namespace std::chrono;//
 using namespace std;
 
 
