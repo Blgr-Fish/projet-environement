@@ -192,7 +192,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
     Production production_region;
 
 
-	int nombre_regions = taille(tache_de_calcul.region); // nombre de régions
+	const int nombre_regions = taille(tache_de_calcul.region); // nombre de régions
     int prod_totale_region = 0; 						 // la production totale d'une région qui est initialisée à 0
 	int region_compteur = 1 ; 							 // il va s'incrementer à chaque fois qu'on calcul une nouvelle region jusqu'a ce qu'on fasse toutes les régions
     int prod_totale_nation = 0; 						 // la production tôtale des 12 régions
@@ -427,10 +427,6 @@ liste<string> lire_regions_noms(string fichier){
 
 }
 
-
-
-
-
 void lire_regions (liste<Region> & r,liste<string> regions_noms){ // c'est ici qu'on créé le nombre de régions pour la liste de régions
 
 	int num = 1;
@@ -509,9 +505,9 @@ int afficher_contenu_region_mono (liste<Region> region, int identifiant, Couts c
 	return 0;
 }
 
-int afficher_regions (liste<Region> r,liste<Production> p, liste<Production> s,Couts couts, int mode, string fichier){ 
+int afficher_regions (liste<Region> r,liste<Production> p, liste<Production> s,Couts couts, int mode_execution, string fichier){ 
 
-	switch (mode){
+	switch (mode_execution){
 
 		case 1:
 			afficher_contenu_region(p,0,couts,fichier); // on choisit 0 l'id pour la liste parallele
@@ -550,7 +546,7 @@ int main(int argc , char * argv[]){ // tache_de_calcul couts regions production 
     ofstream file0("parallele.txt");											//
     ofstream file1("monoregion.txt");											// On ouvre les fichiers pour les reset
     ofstream file2("sequentielle.txt");											//
-	liste<string> fichiers = {"parallele.txt", "monoregion.txt","sequentielle.txt"}; // liste des fichiers d'écriture
+	liste<string> fichiers_ecriture = {"parallele.txt", "monoregion.txt","sequentielle.txt"}; // liste des fichiers d'écriture
     string fichier_production ;
     for (string ele : arguments_programme){										// le dernier élement de arguments_programme ne marche pas pour je ne sais quelle raison
 								
@@ -563,8 +559,8 @@ int main(int argc , char * argv[]){ // tache_de_calcul couts regions production 
     auto start = high_resolution_clock::now(); // pour lancer le chrono
 	
 	lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul);
-	for (int i = 1; i<= taille(fichiers); i++){			
-		afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,i,fichiers[i]);
+	for (int i = 1; i<= taille(fichiers_ecriture); i++){			
+		afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,i,fichiers_ecriture[i]);
 	}
 
     cout << "Fin." << endl ;
