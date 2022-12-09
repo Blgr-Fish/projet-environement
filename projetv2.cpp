@@ -184,7 +184,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 	sequentielle : c'est la liste des productions pour la méthode sequentielle
 	fichier : c'est le fichier où on lit les productions
 	couts : c'est la variable qui contient les couts de productions
-	tache_de_calcul : 
+	tache_de_calcul : c'est la variable contenant les données pour traiter les régions.
 	
 	*/
 
@@ -192,27 +192,27 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
     Production production_region;
 
 
-	const int nombre_regions = taille(tache_de_calcul.region); // nombre de régions
-    int prod_totale_region = 0; 						 // la production totale d'une région qui est initialisée à 0
-	int region_compteur = 1 ; 							 // il va s'incrementer à chaque fois qu'on calcul une nouvelle region jusqu'a ce qu'on fasse toutes les régions
-    int prod_totale_nation = 0; 						 // la production tôtale des 12 régions
-    int echanges_totaux = 0; 							 // les échanges physiques totaux des 12 régions
-	int cout_marginal = 0; 								 // le cout marginal d'une région	
-	float cout_moyen = 0; 								 //le cout moyen des productions d'une region 
-	float importation_nationale = 0; 					 // importation nationale 
+	const int nombre_regions = taille(tache_de_calcul.region); 	// nombre de régions
+    int prod_totale_region = 0; 						 		// la production totale d'une région qui est initialisée à 0
+	int region_compteur = 1 ; 							 		// il va s'incrementer à chaque fois qu'on calcul une nouvelle region jusqu'a ce qu'on fasse toutes les régions
+    int prod_totale_nation = 0; 						 		// la production tôtale des 12 régions
+    int echanges_totaux = 0; 							 		// les échanges physiques totaux des 12 régions
+	int cout_marginal = 0; 										// le cout marginal d'une région	
+	float cout_moyen = 0; 										//le cout moyen des productions d'une region 
+	float importation_nationale = 0; 							// importation nationale 
 	
 	bool depassement_date = false;
-	liste<Production> liste_regions_temp = {}; 			 // Création d'une liste temportaire qui prendra comme valeurs les Productions qui passent les contraintes
+	liste<Production> liste_regions_temp = {}; 			 		// Création d'une liste temportaire qui prendra comme valeurs les Productions qui passent les contraintes
 
     flux.open(fichier, ios::in); // on met pas de while (flux.good()) pour la première leture car on part du principe que les fichiers ne sont pas corrompus ou autre.
     if (flux.is_open()) {
 
-        flux >>production_region.region;  // première lecture avant le tant que
+        flux >>production_region.region;  
 	    flux >>production_region.mois; 
 	    flux >>production_region.jour; 
 	    flux >>production_region.heure;
 
-        flux >>production_region.thermique.production; // les productions de chaque moyen de production
+        flux >>production_region.thermique.production;
         flux >>production_region.nucleaire.production;
         flux >>production_region.eolien.production;
         flux >>production_region.solaire.production;
@@ -336,7 +336,7 @@ Tache_de_calcul lire_tache_de_calcul(string nom_fichier){
 	Tache_de_calcul tache_de_calcul;
 	fstream flux;
 	liste<int> li =  {};
-	int nb;
+	int region_id;
 	
 	flux.open(nom_fichier, ios::in); // on met pas de while (flux.good()) car on part du principe que les fichiers ne sont pas corrompus ou autre.
 	if (flux.is_open()) {
@@ -354,14 +354,14 @@ Tache_de_calcul lire_tache_de_calcul(string nom_fichier){
 		flux >> tache_de_calcul.pourcentage_minimum_production_marginale;
 		flux >> tache_de_calcul.pourcentage_maximal_importation;
 		flux >> tache_de_calcul.pourcentage_maximal_importation_nationale;
-		flux >> nb;
+		flux >> region_id;
 
 		while (flux.good()){
 
-			inserer(nb, li, taille(li)+1);
-			flux >> nb ;
+			inserer(region_id, li, taille(li)+1);
+			flux >> region_id ;
 		}
-			inserer(nb, li, taille(li)+1); // on insere une dernière fois pour pas passer la dernière région
+			inserer(region_id, li, taille(li)+1); // on insere une dernière fois pour pas passer la dernière région
 			tache_de_calcul.region = li;
 
 		
@@ -400,18 +400,18 @@ Couts lire_couts(string fichier){
 
 liste<string> lire_regions_noms(string fichier){
 
-	liste<string> region_nom = {};
+	liste<string> liste_region_nom = {};
 	fstream flux;
-	string r;
+	string region_nom;
 	flux.open(fichier , ios::in);
 	if(flux.is_open()){ // on met pas de while (flux.good()) pour le premier element car on part du principe que les fichiers ne sont pas corrompus ou autre.
 
-		flux >> r;
+		flux >> region_nom;
 
 	while(flux.good()){
 
-		inserer(r,region_nom,taille(region_nom)+1);
-		flux  >> r;
+		inserer(region_nom,liste_region_nom,taille(liste_region_nom)+1);
+		flux  >> region_nom;
 
 	}
 
@@ -423,11 +423,11 @@ liste<string> lire_regions_noms(string fichier){
 		cout << "Erreur : impossible d'ouvrir " << fichier << endl;
 	}
 
-	return region_nom;
+	return liste_region_nom;
 
 }
 
-void lire_regions (liste<Region> & r,liste<string> regions_noms){ // c'est ici qu'on créé le nombre de régions pour la liste de régions
+void lire_regions (liste<Region> & liste_region,liste<string> regions_noms){ // c'est ici qu'on créé le nombre de régions pour la liste de régions
 
 	int num = 1;
 
@@ -437,7 +437,7 @@ void lire_regions (liste<Region> & r,liste<string> regions_noms){ // c'est ici q
 		temp.nom = ele;				// son nom
 		temp.id = num;				// son numéro d'identification
 		num ++;
-		inserer(temp,r,taille(r)+1);
+		inserer(temp,liste_region,taille(liste_region)+1);
 
 	}
 }
@@ -505,22 +505,22 @@ int afficher_contenu_region_mono (liste<Region> region, int identifiant, Couts c
 	return 0;
 }
 
-int afficher_regions (liste<Region> r,liste<Production> p, liste<Production> s,Couts couts, int mode_execution, string fichier){ 
+int afficher_regions (liste<Region> liste_r,liste<Production> liste_p, liste<Production> liste_s,Couts couts, int mode_execution, string fichier){ 
 
 	switch (mode_execution){
 
 		case 1:
-			afficher_contenu_region(p,0,couts,fichier); // on choisit 0 l'id pour la liste parallele
+			afficher_contenu_region(liste_p,0,couts,fichier); // on choisit 0 l'id pour la liste parallele
 			break;
 
 		case 2:
-			for (int i = 1; i<= taille(r); i++){
-				afficher_contenu_region_mono(r,r[i].id,couts,fichier);
+			for (int i = 1; i<= taille(liste_r); i++){
+				afficher_contenu_region_mono(liste_r,liste_r[i].id,couts,fichier);
 			}
 			break;
 
 		default:
-			afficher_contenu_region(s,-1,couts,fichier); // on choisit -1 l'id pour la liste sequentielle
+			afficher_contenu_region(liste_s,-1,couts,fichier); // on choisit -1 l'id pour la liste sequentielle
 			break;
 
 	}
