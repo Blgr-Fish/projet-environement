@@ -245,8 +245,8 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 
 			}			
 
-			if (region_compteur > nombre_regions){ // la production nationale repasse à 0 quand on a fait le tour de toutes le regions
-            
+			if (region_compteur > taille(regions)){ // la production nationale repasse à 0 quand on a fait le tour de toutes les regions
+				
 				importation_nationale = echanges_nationaux(echanges_totaux,prod_totale_nation);	
 				prod_totale_nation = 0;
 				echanges_totaux = 0;
@@ -259,10 +259,9 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 					
 					for (Production ele : liste_regions_temp){
                         
-						if ( cout_eleve >= couts_moyen(ele,couts)){ // vu que cout_eleve est très grand, il sera forcément supérieur à couts_moyen.
-							
+						if ( cout_eleve >= couts_moyen(ele,couts)){ // vu que cout_eleve est très grand, il sera forcément supérieur à couts_moyen.						
 							ele_temp = ele;
-							cout_eleve = couts_moyen(ele_temp,couts); // puis cout_eleve prend la valeur du cout moyen de ele.
+							cout_eleve = couts_moyen(ele_temp,couts); // puis cout_eleve prend la valeur du cout moyen de ele, sert au mode séquentiel.
 														
 						}
 						
@@ -586,7 +585,7 @@ int main(int argc , char * argv[]){ // tache_de_calcul couts regions production 
 
     }
 
-
+	
 
     cout << "Chargement... Cela peut prendre jusqu'a plusieurs dizaines de secondes..." << endl;
 
