@@ -160,35 +160,31 @@ bool contraintes(Production production ,Tache_de_calcul Tache_de_calcul, int cou
 
 void insere_region(Production p_r, liste<Production> & r, Tache_de_calcul tache_de_calcul,Couts coute){ // permet l'insertion des régions dans la liste parallele
 
-	if (taille(r) < tache_de_calcul.duree){  
-		 
+	if (taille(r) < tache_de_calcul.duree){  		 
 		inserer(p_r,r, taille(r)+1);
-
 	}
 }
 
 void insere_region_mono (Production p_r, Region & r, Tache_de_calcul tache_de_calcul){ // on accède à la liste de production direcement depuis la région
 		
-			if (taille(r.valeurs_production) < tache_de_calcul.duree){
-				
-				inserer(p_r, r.valeurs_production, taille(r.valeurs_production)+1);
-				
-				
+			if (taille(r.valeurs_production) < tache_de_calcul.duree){				
+				inserer(p_r, r.valeurs_production, taille(r.valeurs_production)+1);		
 			}	
 		}
 	
 	
 
 
-void lire_production (liste<Region> & regions,liste<Production> & parallele, liste<Production> & sequentielle, string fichier,Couts couts,Tache_de_calcul tache_de_calcul, int mode_calcul){
+void lire_production (liste<Region> & regions,liste<Production> & parallele, liste<Production> & sequentielle, string fichier,Couts couts,Tache_de_calcul tache_de_calcul){
 																									
 	/* Paramètres :
 	
-	fichier: permet de lire le fichier des productions (celui de 100 000+ lignes)
-	couts : c'est l'enregistrement permettant des lire les couts
-	Tache_de_calcul : c'est l'enegistrement permettant de lire la feuille de calcul.
-	mode_calcul : c'est l'entier qui va determiner la méthode d'execution
-	prend les valeurs suivantes : 1 : mode_calcul = parallele, 2 : mode_calcul = monoregion, autre : mode_calcul = sequentielle
+	regions : c'est la liste contenant les régions. Sert pour la méthode monoregion
+	parallele : c'est la liste des productions pour la méthode parallele
+	sequentielle : c'est la liste des productions pour la méthode sequentielle
+	fichier : c'est le fichier où on lit les productions
+	couts : c'est la variable qui contient les couts de productions
+	tache_de_calcul : 
 	
 	*/
 
@@ -208,7 +204,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 	bool depassement_date = false;
 	liste<Production> liste_regions_temp = {}; 			 // Création d'une liste temportaire qui prendra comme valeurs les Productions qui passent les contraintes
 
-    flux.open(fichier, ios::in);
+    flux.open(fichier, ios::in); // on met pas de while (flux.good()) pour la première leture car on part du principe que les fichiers ne sont pas corrompus ou autre.
     if (flux.is_open()) {
 
         flux >>production_region.region;  // première lecture avant le tant que
@@ -265,37 +261,25 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 														
 						}
 						
-						switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
+						insere_region(ele, parallele, tache_de_calcul,couts); // INSERTION PARALLELE
 
-						case 1 :
-							insere_region(ele, parallele, tache_de_calcul,couts);
-                           
-							break;
-						
-						case 2:
-							
-							for (long unsigned int region_id : tache_de_calcul.region){ // on fait une boucle pour pouvoir inserer la production dans la bonne région
+						for (long unsigned int region_id : tache_de_calcul.region){ // on fait une boucle pour pouvoir inserer la production dans la bonne région
 
 								if (ele.region == region_id){
 							
-								insere_region_mono(ele, regions[region_id], tache_de_calcul);
+								insere_region_mono(ele, regions[region_id], tache_de_calcul); // INSERTION MONOREGION
 								}
-							}	
-
-							break;
-							
-
-						}					
+						}
+								
 					}
 
-					if (mode_calcul != 1 and mode_calcul != 2 and couts_moyen(ele_temp,couts) > 0){ // des fois, couts_moyen(ele_temp,couts) est = 0, ce qui fait
-                                                                                                    // que la liste se remplie de 0.
-						insere_region(ele_temp,sequentielle, tache_de_calcul,couts);
+					if (couts_moyen(ele_temp,couts) > 0){
+
+						insere_region(ele_temp,sequentielle, tache_de_calcul,couts); // INSERTION SEQUENTIELLE
 
 					}
-
-					liste_regions_temp = {};
-                    
+			
+					liste_regions_temp = {};                 
 				}
 			}
 					
@@ -354,9 +338,9 @@ Tache_de_calcul lire_tache_de_calcul(string nom_fichier){
 	liste<int> li =  {};
 	int nb;
 	
-	flux.open(nom_fichier, ios::in);
+	flux.open(nom_fichier, ios::in); // on met pas de while (flux.good()) car on part du principe que les fichiers ne sont pas corrompus ou autre.
 	if (flux.is_open()) {
-		flux >> tache_de_calcul.identifiant;  // première lecture avant le tant que
+		flux >> tache_de_calcul.identifiant;  
 		flux >> tache_de_calcul.nom;
 		flux >> tache_de_calcul.duree;
 		flux >> tache_de_calcul.mois_depart;
@@ -394,7 +378,7 @@ Tache_de_calcul lire_tache_de_calcul(string nom_fichier){
 Couts lire_couts(string fichier){
 	Couts couts;
 	fstream flux;
-	flux.open(fichier, ios::in);
+	flux.open(fichier, ios::in); // on met pas de while (flux.good()) car on part du principe que les fichiers ne sont pas corrompus ou autre.
 	
 	if (flux.is_open()) {
 		
@@ -420,7 +404,7 @@ liste<string> lire_regions_noms(string fichier){
 	fstream flux;
 	string r;
 	flux.open(fichier , ios::in);
-	if(flux.is_open()){
+	if(flux.is_open()){ // on met pas de while (flux.good()) pour le premier element car on part du principe que les fichiers ne sont pas corrompus ou autre.
 
 		flux >> r;
 
@@ -447,35 +431,30 @@ liste<string> lire_regions_noms(string fichier){
 
 
 
-void lire_regions (liste<Region> & r,liste<string> regions_noms){		// on met le nom d'une région dans une Caracterisitiques, puis on la met dans une liste d eCaracteristiques.
+void lire_regions (liste<Region> & r,liste<string> regions_noms){ // c'est ici qu'on créé le nombre de régions pour la liste de régions
 
 	int num = 1;
-	
+
 	for (string ele : regions_noms){
 
-        Region temp;
-
-		temp.nom = ele;
-		temp.id = num;
+        Region temp;				
+		temp.nom = ele;				// son nom
+		temp.id = num;				// son numéro d'identification
 		num ++;
 		inserer(temp,r,taille(r)+1);
 
 	}
-
-	
-
-
 }
 
 int afficher_contenu_region(liste<Production> region, int identifiant, Couts couts, string fichier){
 
 	fstream flux;
-	flux.open(fichier,ios::app); // ios::app permet d'ecrire à la suite du fichier, sans supprimer les données précédentes.
+	flux.open(fichier,ios::out); 
 	
-	if (flux.is_open()){
+	if (flux.is_open()){ // on met pas de while (flux.good()) car on part du principe que les fichiers ne sont pas corrompus ou autre.
 
 	
-		switch (identifiant){ // MODIFICATION ICI //
+		switch (identifiant){ 
 
 			case -1 :
 
@@ -508,15 +487,14 @@ int afficher_contenu_region(liste<Production> region, int identifiant, Couts cou
 int afficher_contenu_region_mono (liste<Region> region, int identifiant, Couts couts, string fichier){
 	
 	fstream flux;
-	flux.open(fichier,ios::app); // ios::app permet d'ecrire à la suite du fichier, sans supprimer les données précédentes.
+	flux.open(fichier,ios::app); // ios::app permet d'ecrire à la suite du fichier, sans supprimer les données précédentes, indispensable pour le mode monorégion.
 	
-	if (flux.is_open()){
+	if (flux.is_open()){ // on met pas de while (flux.good()) car on part du principe que les fichiers ne sont pas corrompus ou autre.
 
-		
 		flux << region[identifiant].nom << " " << taille(region[identifiant].valeurs_production) << endl; 
 		
-		if ( taille(region[identifiant].valeurs_production)>= 1){
-			for (int i = 1; i<= taille(region[identifiant].valeurs_production); i++){
+		if ( taille(region[identifiant].valeurs_production)>= 1){ // protection pour s'assurer qu'aucune liste vide vienne ici, (mais pas obligatoire)
+			for (int i = 1; i<= taille(region[identifiant].valeurs_production); i++){ 
 			
 				flux << region[identifiant].valeurs_production[i].mois << " " << region[identifiant].valeurs_production[i].jour << " " << region[identifiant].valeurs_production[i].heure << " " << region[identifiant].valeurs_production[i].region<< " " << couts_moyen(region[identifiant].valeurs_production[i], couts) << endl;
 		    }
@@ -533,30 +511,25 @@ int afficher_contenu_region_mono (liste<Region> region, int identifiant, Couts c
 
 int afficher_regions (liste<Region> r,liste<Production> p, liste<Production> s,Couts couts, int mode, string fichier){ 
 
-	if (mode == 1){
+	switch (mode){
 
-		afficher_contenu_region(p,0,couts,fichier); // on choisit 0 l'id pour la liste parallele
-	}
+		case 1:
+			afficher_contenu_region(p,0,couts,fichier); // on choisit 0 l'id pour la liste parallele
+			break;
 
-	else{
-
-		if (mode == 2){
-
+		case 2:
 			for (int i = 1; i<= taille(r); i++){
-				
 				afficher_contenu_region_mono(r,r[i].id,couts,fichier);
-
 			}
+			break;
 
-		}
-
-		else{
-			
+		default:
 			afficher_contenu_region(s,-1,couts,fichier); // on choisit -1 l'id pour la liste sequentielle
-			
-		}
+			break;
+
 	}
-	
+
+
 	return 0;
 
 }
@@ -579,36 +552,25 @@ int main(int argc , char * argv[]){ // tache_de_calcul couts regions production 
     ofstream file2("sequentielle.txt");											//
 	liste<string> fichiers = {"parallele.txt", "monoregion.txt","sequentielle.txt"}; // liste des fichiers d'écriture
     string fichier_production ;
-    for (string ele : arguments_programme){										// le dernier élement de arguments_programme ne marche pas pour x,raison
+    for (string ele : arguments_programme){										// le dernier élement de arguments_programme ne marche pas pour je ne sais quelle raison
 								
         fichier_production = ele;												// j'ai donc fait ça pour le lire
 
     }
 
-	
-
     cout << "Chargement... Cela peut prendre jusqu'a plusieurs dizaines de secondes..." << endl;
 
     auto start = high_resolution_clock::now(); // pour lancer le chrono
 	
-	
-
-	for (int i = 1; i<= taille(fichiers); i++){
-
-		lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul,i);		// monoregion qui bug
+	lire_production(les_regions,methode_parallele,methode_sequentielle,fichier_production,couts_productions,tache_calcul);
+	for (int i = 1; i<= taille(fichiers); i++){			
 		afficher_regions(les_regions,methode_parallele,methode_sequentielle,couts_productions,i,fichiers[i]);
-
-
 	}
 
-
     cout << "Fin." << endl ;
-
-
     auto stop = high_resolution_clock::now(); // fin du chrono
 	auto duration = duration_cast<milliseconds>(stop - start);
 	cout << "Temps d'execution : " << duration.count() <<  " millisecondes" << endl;
 
     return 0;
-
 }
