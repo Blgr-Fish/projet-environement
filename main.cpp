@@ -1,10 +1,10 @@
 /*
-Titre : Projet d'informatique de fin de semestre.
-
-Rôle : Planifier une tâche de calcul coûteuse mais découpable en 
-	   fonction de critères multiples dont environnementaux.
-
-Autheurs : IJJA Ziad, ROGER Aurivel et SAINTE-LUCE Clément.
+| Titre : Projet d'informatique de fin de semestre.
+|
+| Rôle : Planifier une tâche de calcul coûteuse mais découpable en 
+| 	     fonction de critères multiples dont environnementaux.
+|
+| Autheurs : IJJA Ziad, ROGER Aurivel et SAINTE-LUCE Clément.
 */
 
 #include <iostream>
