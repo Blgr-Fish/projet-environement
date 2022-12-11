@@ -100,4 +100,3 @@ Auvergne_Rhone_Alpes 15
 1 1 13 11 23.0512
 1 1 14 11 22.9534
 Provence_Alpes_Cote_d'Azur 0
-bonjour_region 0
