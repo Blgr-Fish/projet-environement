@@ -1,3 +1,12 @@
+/*
+Titre : Projet d'informatique de fin de semestre.
+
+Rôle : Planifier une tâche de calcul coûteuse mais découpable en 
+	   fonction de critères multiples dont environnementaux.
+
+Autheurs : IJJA Ziad, ROGER Aurivel et SAINTE-LUCE Clément.
+*/
+
 #include <iostream>
 #include <fstream>
 #include "liste.hpp"
@@ -21,6 +30,7 @@ struct Production{
     Energie thermique, nucleaire, eolien, solaire, hydraulique, bioenergie,importation; // ce qui donne {production,taux_production} pour chaque type de production
 };
 
+// -----------------------------------------------------------------------------
 
 struct Tache_de_calcul{ // enregistrement qui contient les données de la feuille de calcul (nombre de régions, cout marginal , etc)
 
@@ -31,11 +41,13 @@ struct Tache_de_calcul{ // enregistrement qui contient les données de la feuill
 
 };
 
+// -----------------------------------------------------------------------------
 
 struct Couts{  // enregistrement qui contient les couts de productions de chaque énergie
 	int cout_thermique, cout_nucleaire, cout_eolien, cout_solaire, cout_hydraulique, cout_bioenergie;
 };
 
+// -----------------------------------------------------------------------------
 
 struct Region{ // enregistrement qui contient les valeurs d'une région : l'id, le nom et la liste de ses productions.
 
@@ -44,6 +56,11 @@ struct Region{ // enregistrement qui contient les valeurs d'une région : l'id, 
     liste<Production> valeurs_production = {};
 
 };
+
+
+
+// FONCTIONS ET PROCEDURES //
+
 
 
 void taux_de_production_energie(Production & p_r, int & production_totale){
@@ -79,18 +96,21 @@ void taux_de_production_energie(Production & p_r, int & production_totale){
     }
 }
 
+// -----------------------------------------------------------------------------
 
 float echanges_nationaux (int echanges_totaux, int production_totale) { // renvoie les echanges physiques nationaux.
 	float resultats = (echanges_totaux*100) / production_totale;
 	return resultats;
 }
 
+// -----------------------------------------------------------------------------
 
 float couts_moyen(Production p_r, Couts cout) { // renvoie le cout de production moyen d'une region 
 	float resultats = (cout.cout_thermique * (p_r.thermique.taux_production/100)) + (cout.cout_nucleaire* (p_r.nucleaire.taux_production/100)) + (cout.cout_eolien*(p_r.eolien.taux_production/100)) + (cout.cout_solaire * (p_r.solaire.taux_production/100)) + (cout.cout_hydraulique *  (p_r.hydraulique.taux_production/100)) + (cout.cout_bioenergie *  (p_r.bioenergie.taux_production/100));
 	return resultats;
 }
 
+// -----------------------------------------------------------------------------
 
 int cout_marginal_regional(Production regionale,Tache_de_calcul Tache_de_calcul, Couts couts){ // renvoie le cout marginal d'une region en fonction de la tache de calcul
 	
@@ -128,6 +148,7 @@ int cout_marginal_regional(Production regionale,Tache_de_calcul Tache_de_calcul,
 	return cout_marginale;
 }
 
+// -----------------------------------------------------------------------------
 
 bool contraintes(Production production ,Tache_de_calcul Tache_de_calcul, int cout_marg, float cout_moy,int production_region){
 
@@ -157,6 +178,7 @@ bool contraintes(Production production ,Tache_de_calcul Tache_de_calcul, int cou
 	return conditions;
 }
 
+// -----------------------------------------------------------------------------
 
 void insere_region(Production p_r, liste<Production> & r, Tache_de_calcul tache_de_calcul,Couts coute){ // permet l'insertion des régions dans la liste parallele
 
@@ -165,15 +187,17 @@ void insere_region(Production p_r, liste<Production> & r, Tache_de_calcul tache_
 	}
 }
 
+// -----------------------------------------------------------------------------
+
 void insere_region_mono (Production p_r, Region & r, Tache_de_calcul tache_de_calcul){ // on accède à la liste de production direcement depuis la région
 		
 			if (taille(r.valeurs_production) < tache_de_calcul.duree){				
 				inserer(p_r, r.valeurs_production, taille(r.valeurs_production)+1);		
 			}	
-		}
-	
+}
 	
 
+// -----------------------------------------------------------------------------
 
 void lire_production (liste<Region> & regions,liste<Production> & parallele, liste<Production> & sequentielle, string fichier,Couts couts,Tache_de_calcul tache_de_calcul){
 																									
@@ -332,6 +356,8 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
     
 }
 
+// -----------------------------------------------------------------------------
+
 Tache_de_calcul lire_tache_de_calcul(string nom_fichier){
 	Tache_de_calcul tache_de_calcul;
 	fstream flux;
@@ -375,6 +401,8 @@ Tache_de_calcul lire_tache_de_calcul(string nom_fichier){
 
 }
 
+// -----------------------------------------------------------------------------
+
 Couts lire_couts(string fichier){
 	Couts couts;
 	fstream flux;
@@ -397,6 +425,8 @@ Couts lire_couts(string fichier){
 	return couts;
 	
 }
+
+// -----------------------------------------------------------------------------
 
 liste<string> lire_regions_noms(string fichier){
 
@@ -427,6 +457,8 @@ liste<string> lire_regions_noms(string fichier){
 
 }
 
+// -----------------------------------------------------------------------------
+
 void lire_regions (liste<Region> & liste_region,liste<string> regions_noms){ // c'est ici qu'on créé le nombre de régions pour la liste de régions
 
 	int num = 1;
@@ -441,6 +473,8 @@ void lire_regions (liste<Region> & liste_region,liste<string> regions_noms){ // 
 
 	}
 }
+
+// -----------------------------------------------------------------------------
 
 int afficher_contenu_region(liste<Production> region, int identifiant, Couts couts, string fichier){
 
@@ -480,6 +514,8 @@ int afficher_contenu_region(liste<Production> region, int identifiant, Couts cou
 	return 0;
 }
 
+// -----------------------------------------------------------------------------
+
 int afficher_contenu_region_mono (liste<Region> region, int identifiant, Couts couts, string fichier){
 	
 	fstream flux;
@@ -505,6 +541,8 @@ int afficher_contenu_region_mono (liste<Region> region, int identifiant, Couts c
 	return 0;
 }
 
+// -----------------------------------------------------------------------------
+
 int afficher_regions (liste<Region> liste_r,liste<Production> liste_p, liste<Production> liste_s,Couts couts, int mode_execution, string fichier){ 
 
 	switch (mode_execution){
@@ -529,6 +567,8 @@ int afficher_regions (liste<Region> liste_r,liste<Production> liste_p, liste<Pro
 	return 0;
 
 }
+
+// -----------------------------------------------------------------------------
 
 int main(int argc , char * argv[]){ // tache_de_calcul couts regions production    ex : tache.txt couts.txt regions.txt t5.ssv
 
