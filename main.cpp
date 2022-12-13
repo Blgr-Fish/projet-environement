@@ -273,7 +273,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 				region_compteur = 1;
 
 				Production ele_temp;
-				float cout_eleve = couts_moyen(liste_regions_temp[1],couts);     // on met un nombre très grand nombre pour l'initialisation.
+				float cout_eleve = 1000;     // on met un nombre très grand nombre pour l'initialisation.
 
 				if (importation_nationale <= tache_de_calcul.pourcentage_maximal_importation_nationale){ // importation nationale
 					
