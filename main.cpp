@@ -286,7 +286,7 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 						}
 						
 
-						
+
 						insere_region(ele, parallele, tache_de_calcul,couts); // INSERTION PARALLELE
 
 						for (long unsigned int region_id : tache_de_calcul.region){ // on fait une boucle pour pouvoir inserer la production dans la bonne région
@@ -586,7 +586,7 @@ int main(int argc , char * argv[]){ // tache_de_calcul couts regions production 
     liste<string> liste_regions = lire_regions_noms(arguments_programme[3]);	// liste des régions
     lire_regions(les_regions,liste_regions);
     ofstream file0("parallele.txt");											//
-    ofstream file1("monoregion.txt");											// On ouvre les fichiers pour les reset
+    ofstream file1("monoregion.txt");											// On ouvre les fichiers pour les reset (ofstream = Output File Stream)
     ofstream file2("sequentielle.txt");											//
 	liste<string> fichiers_ecriture = {"parallele.txt", "monoregion.txt","sequentielle.txt"}; // liste des fichiers d'écriture
     string fichier_production ;
