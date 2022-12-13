@@ -273,17 +273,19 @@ void lire_production (liste<Region> & regions,liste<Production> & parallele, lis
 				region_compteur = 1;
 
 				Production ele_temp;
-				float cout_eleve = 1000;     // on met un nombre très grand nombre pour l'initialisation.
+				float cout_eleve = 1000;     // valeur arbitrairement choisie, de sorte que la comparaison à la ligne 282 soit toujours vraie pour la première itteration.
 
 				if (importation_nationale <= tache_de_calcul.pourcentage_maximal_importation_nationale){ // importation nationale
 					
 					for (Production ele : liste_regions_temp){
                         
-						if ( cout_eleve >= couts_moyen(ele,couts)){ // vu que cout_eleve est très grand, il sera forcément supérieur à couts_moyen.						
-							ele_temp = ele;
-							cout_eleve = couts_moyen(ele_temp,couts); // puis cout_eleve prend la valeur du cout moyen de ele, sert au mode séquentiel.
-														
+						if ( cout_eleve >= couts_moyen(ele,couts)){				//
+							ele_temp = ele;										// Sert uniquement au mode sequentiel.
+							cout_eleve = couts_moyen(ele_temp,couts); 			//
+																				//
 						}
+						
+
 						
 						insere_region(ele, parallele, tache_de_calcul,couts); // INSERTION PARALLELE
 
