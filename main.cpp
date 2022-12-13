@@ -112,31 +112,31 @@ float couts_moyen(Production p_r, Couts cout) { // renvoie le cout de production
 
 // -----------------------------------------------------------------------------
 
-int cout_marginal_regional(Production regionale,Tache_de_calcul Tache_de_calcul, Couts couts){ // renvoie le cout marginal d'une region en fonction de la tache de calcul
+int cout_marginal_regional(Production regionale,Tache_de_calcul tache_de_calcul, Couts couts){ // renvoie le cout marginal d'une region en fonction de la tache de calcul
 	
 	int cout_marginale = 0;
 	
-	if(regionale.thermique.taux_production > Tache_de_calcul.pourcentage_minimum_production_marginale){
+	if(regionale.thermique.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
 		cout_marginale = couts.cout_thermique; // 560
 		}
 	else{
-		if(regionale.bioenergie.taux_production > Tache_de_calcul.pourcentage_minimum_production_marginale){
+		if(regionale.bioenergie.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
 			cout_marginale = couts.cout_bioenergie; // 230
 			}
 		else{
-			if(regionale.solaire.taux_production > Tache_de_calcul.pourcentage_minimum_production_marginale){
+			if(regionale.solaire.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
 				cout_marginale = couts.cout_solaire; // 27
 				}
 			else{
-				if(regionale.hydraulique.taux_production > Tache_de_calcul.pourcentage_minimum_production_marginale){
+				if(regionale.hydraulique.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
 					cout_marginale = couts.cout_hydraulique; // 24
 					}
 				else{
-					if(regionale.nucleaire.taux_production > Tache_de_calcul.pourcentage_minimum_production_marginale){
+					if(regionale.nucleaire.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
 						cout_marginale = couts.cout_nucleaire; // 12
 						}
 					else{
-						if(regionale.eolien.taux_production > Tache_de_calcul.pourcentage_minimum_production_marginale){
+						if(regionale.eolien.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
 							cout_marginale = couts.cout_eolien; // 11
 							}
 						}
@@ -150,7 +150,7 @@ int cout_marginal_regional(Production regionale,Tache_de_calcul Tache_de_calcul,
 
 // -----------------------------------------------------------------------------
 
-bool contraintes(Production production ,Tache_de_calcul Tache_de_calcul, int cout_marg, float cout_moy,int production_region){
+bool contraintes(Production production ,Tache_de_calcul tache_de_calcul, int cout_marg, float cout_moy,int production_region){
 
 	// les différentes contraintes sont : 
 	// 1. le cout moyen
@@ -160,13 +160,13 @@ bool contraintes(Production production ,Tache_de_calcul Tache_de_calcul, int cou
 
 	bool conditions = false;
 
-	if (cout_moy < Tache_de_calcul.cout_moyen_maximum){ // 1
+	if (cout_moy < tache_de_calcul.cout_moyen_maximum){ // 1
 
-		if (cout_marg < Tache_de_calcul.cout_marginal_maximum){ // 2
+		if (cout_marg < tache_de_calcul.cout_marginal_maximum){ // 2
 
-			if (production_region >= Tache_de_calcul.pourcentage_maximal_importation){ // 3
+			if (production_region >= tache_de_calcul.pourcentage_maximal_importation){ // 3
 
-				if (production.mois >= Tache_de_calcul.mois_depart and production.jour >= Tache_de_calcul.jour_depart and production.heure >= Tache_de_calcul.horaire_depart){
+				if (production.mois >= tache_de_calcul.mois_depart and production.jour >= tache_de_calcul.jour_depart and production.heure >= tache_de_calcul.horaire_depart){
 				
 					conditions = true;
 				}
