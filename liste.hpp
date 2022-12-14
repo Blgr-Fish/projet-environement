@@ -51,7 +51,7 @@ class liste : protected std::list<T>
             assert(1<=idx); assert(idx<=taille);
             auto it = this->begin();
             while ( idx > 1 ) { it++ ; idx-- ; }
-            return *it
+            return *it;
         }
 
         //----------------------------------------------------------
