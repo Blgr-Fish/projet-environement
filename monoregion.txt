@@ -9,4 +9,4 @@ Bretagne 0
 Nouvelle_Aquitaine 0
 Occitanie 0
 Auvergne_Rhone_Alpes 0
-Provence_Alpes_Cote_d'Azur 
+Provence_Alpes_Cote_d'Azur 0
