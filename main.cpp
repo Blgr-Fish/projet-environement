@@ -117,7 +117,7 @@ int cout_marginal_regional(Production regionale,Tache_de_calcul tache_de_calcul,
 	int cout_marginale = 0;
 	
 	if(regionale.thermique.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
-		cout_marginale = couts.cout_thermique; // 56
+		cout_marginale = couts.cout_thermique; // 560
 		}
 	else{
 		if(regionale.bioenergie.taux_production > tache_de_calcul.pourcentage_minimum_production_marginale){
